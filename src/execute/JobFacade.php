@@ -2,6 +2,7 @@
 
 namespace easyyuan\crontab\execute;
 
+use Carbon\Carbon;
 use easyyuan\crontab\job\JobTable;
 use easyyuan\crontab\Config;
 use easyyuan\crontab\Logger;
@@ -47,7 +48,8 @@ class JobFacade
 
         //获取1分钟内执行的时间戳
         try {
-            $times = FormatParser::getInstance()->parse( $data['format'] );
+            $last  = time();
+            $times = FormatParser::getInstance()->parse( $data['format'],$last );
             if (empty( $times )) {
                 return;
             }
@@ -58,16 +60,10 @@ class JobFacade
             return;
         }
 
-        $now = time();
-
         foreach ( $times as $time ) {
-            $t = $time - $now;
-            if ($t <= 0) {
-                $t = 0.001;
-            }
-
+            $diff = Carbon::now()->diffInRealSeconds( $time,false );
             //加入定时任务
-            Timer::after( $t * 1000,function () use ($jobExecute,$key) {
+            Timer::after( $diff > 0 ? $diff * 1000 : 1,function () use ($jobExecute,$key) {
                 try {
                     /* @var $data array */
                     $data = JobTable::getInstance()->get( $key );

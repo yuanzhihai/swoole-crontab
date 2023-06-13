@@ -2,11 +2,10 @@
 
 namespace easyyuan\crontab\job;
 
-use easyyuan\crontab\execute\JobFacade;
 use easyyuan\crontab\Config;
-use Swoole\Coroutine;
-use Swoole\Process;
+use easyyuan\crontab\execute\JobFacade;
 use Swoole\Http\Server;
+use Swoole\Process;
 
 class JobProcess
 {
@@ -54,15 +53,23 @@ class JobProcess
     {
         $process = new Process( function () {
             while ( true ) {
+                $this->sleep();
                 JobTable::getInstance()->each( function ($key,&$value) {
                     JobFacade::getExecute( $key,$value );
                 } );
-                Coroutine::sleep( 60 );
             }
-        },false,2,true );
+        },false,0,true );
 
         $process->name( 'SwooleCrontabProcess' );
 
         return $process;
+    }
+
+    private function sleep()
+    {
+        $current = date( 's',time() );
+        $sleep   = 60 - $current;
+        $sleep > 0 && \Swoole\Coroutine::sleep( $sleep );
+
     }
 }

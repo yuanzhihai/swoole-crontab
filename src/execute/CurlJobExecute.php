@@ -2,6 +2,7 @@
 
 namespace easyyuan\crontab\execute;
 
+
 class CurlJobExecute extends JobExecute
 {
 
@@ -12,19 +13,9 @@ class CurlJobExecute extends JobExecute
      */
     public function run(array $data): bool
     {
-        $ch = curl_init();
-        curl_setopt( $ch,CURLOPT_URL,$data['command'] );
-        curl_setopt( $ch,CURLOPT_HEADER,false );
-        curl_setopt( $ch,CURLOPT_NOBODY,false );
-        curl_setopt( $ch,CURLOPT_RETURNTRANSFER,1 );
-        curl_setopt( $ch,CURLOPT_FOLLOWLOCATION,false );
-        curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER,false );
-        curl_setopt( $ch,CURLOPT_SSL_VERIFYHOST,false );
-        curl_setopt( $ch,CURLOPT_TIMEOUT,10 );
-        curl_exec( $ch );
-        $httpCode = curl_getinfo( $ch,CURLINFO_HTTP_CODE ); //返回状态码
-        curl_close( $ch );
-        return $httpCode == 200;
+        $client   = new \GuzzleHttp\Client();
+        $response = $client->get( $data['command'] );
+        return $response->getStatusCode() === 200;
     }
 
     /**
