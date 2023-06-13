@@ -29,7 +29,7 @@ php Crontab stop #关闭常驻内存服务
           "stop_time": 0,   // 结束时间默认0一直运行
           "format": "* * * * * *",  // 执行时间格式参见Crontab基本格式再加上一个秒
           "run_type": "Curl",  // 运行方式内置Class, Curl , Bash三种方式
-          "command": "http://192.168.1.102"
+          "command": "http://192.168.1.102"  // class 任务 "command": {"\app\task\Test","execute","params"}" 
       }
       ##注释:bash运行方式必须配置白名单文件路径`bash_whitelist_file`,内容为可执行的`sh`脚本的绝对路径,保证服务器安全,详见`BashJobExecute`文件
       //返回字段

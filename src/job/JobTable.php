@@ -138,11 +138,13 @@ class JobTable
      */
     public function checkData($data)
     {
-        if (empty( $data['name'] ))
+        if (empty( $data['name'] )) {
             return '任务名称不能为空.';
+        }
 
-        if (strlen( $data['name'] ) > 20)
+        if (strlen( $data['name'] ) > 20) {
             return '任务名称不能大于20个字符.';
+        }
 
         if (!empty( $data['start_time'] )) {
             if (strtotime( date( 'Y-m-d H:i:s',$data['start_time'] ) ) !== $data['start_time']) {
@@ -158,14 +160,17 @@ class JobTable
 
         $command = trim( $data['command'] );
 
-        if (empty( $command ))
+        if (empty( $command )) {
             return '任务命令不能为空.';
+        }
 
-        if (strlen( $command ) > $this->_table->size)
+        if (strlen( $command ) > $this->_table->size) {
             return '任务命令不能大于'.$this->_table->size.'个字符.';
+        }
 
-        if (empty( $data['run_type'] ))
+        if (empty( $data['run_type'] )) {
             return '任务类型不能为空.';
+        }
 
         $runTypes     = Config::getInstance()->jobConfig['run_types'];
         $executeClass = $runTypes[$data['run_type']] ?? null;

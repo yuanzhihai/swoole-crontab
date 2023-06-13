@@ -6,6 +6,7 @@ use easyyuan\crontab\base\ConfigException;
 use easyyuan\crontab\base\Instance;
 use easyyuan\crontab\controller\JobController;
 use easyyuan\crontab\execute\BashJobExecute;
+use easyyuan\crontab\execute\ClassJobExecute;
 use easyyuan\crontab\execute\CurlJobExecute;
 
 class Config
@@ -50,8 +51,9 @@ class Config
     public $jobConfig = [
         //运行方式
         'run_types'           => [
-            'Curl' => CurlJobExecute::class,//Curl执行类
-            'Bash' => BashJobExecute::class,//Bash执行类
+            'Class' => ClassJobExecute::class,//Class执行类
+            'Curl'  => CurlJobExecute::class,//Curl执行类
+            'Bash'  => BashJobExecute::class,//Bash执行类
         ],
         //bash安全模式 默认为空或者文件路径 非白名单里的命令不允许执行
         'bash_whitelist_file' => null,
