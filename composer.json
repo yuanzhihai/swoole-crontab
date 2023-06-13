@@ -1,0 +1,36 @@
+{
+  "name": "yzh52521/swoole-crontab",
+  "description": "基于 swoole 的定时任务服务",
+  "keywords": [
+    "swoole",
+    "crontab"
+  ],
+  "type": "package",
+  "authors": [
+    {
+      "name": "yzh52521",
+      "email": "396751927@qq.com"
+    }
+  ],
+  "license": "Apache-2.0",
+  "require": {
+    "php": ">=7.1",
+    "ext-swoole": ">=4.4",
+    "ext-json": "*",
+    "ext-curl": "*"
+  },
+  "require-dev": {
+    "swoole/ide-helper": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "easyyuan\\crontab\\": "src/"
+    },
+    "files": [
+      "src/functions.php"
+    ]
+  },
+  "config": {
+    "optimize-autoloader": true
+  }
+}
