@@ -32,7 +32,7 @@ class FormatParser
         if (!$this->isValid( $crontabString )) {
             throw new \InvalidArgumentException( 'Invalid cron string: '.$crontabString );
         }
-        $start_time = $start_time ? $start_time : time();
+        $start_time = $start_time ?: time();
         $date       = $this->parseDate( $crontabString );
 
         if (in_array( (int)date( 'i',$start_time ),$date['minutes'] )

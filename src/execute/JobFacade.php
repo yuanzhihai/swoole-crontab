@@ -48,8 +48,9 @@ class JobFacade
         //获取1分钟内执行的时间戳
         try {
             $times = FormatParser::getInstance()->parse( $data['format'] );
-            if (empty( $times ))
+            if (empty( $times )) {
                 return;
+            }
         } catch ( \Exception $e ) {
             $data['status'] = 0;
             JobTable::getInstance()->set( $key,$data );
