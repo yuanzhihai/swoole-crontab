@@ -35,6 +35,8 @@ class HttpServer
 
         $this->initConfig( $config );
 
+        \Swoole\Coroutine::set(['hook_flags' => SWOOLE_HOOK_ALL | SWOOLE_HOOK_CURL]);
+
         $this->_server = new Server( $this->_config->host,$this->_config->port,SWOOLE_PROCESS,$this->_config->sock_type );
 
         $this->_server->set( $this->_config->settings );
