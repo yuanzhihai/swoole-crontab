@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use easyyuan\crontab\job\JobTable;
 use easyyuan\crontab\Config;
 use easyyuan\crontab\Logger;
+use Swoole\Coroutine;
 use Swoole\Timer;
 
 class JobFacade
@@ -62,23 +63,31 @@ class JobFacade
 
         foreach ( $times as $time ) {
             $diff = Carbon::now()->diffInRealSeconds( $time,false );
+
+            $callback = function () use ($jobExecute,$key) {
+
+                $runnable = function () use ($jobExecute,$key) {
+                    try {
+                        /* @var $data array */
+                        $data = JobTable::getInstance()->get( $key );
+                        if (empty( $data ) || empty( $data['status'] )) {
+                            return;
+                        }
+                        if ($jobExecute->run( $data ) === false) {
+                            Logger::getInstance()->setFileName( $key )->error( '执行定时任务['.$data['name'].'],返回结果失败.' );
+                        } else {
+                            Logger::getInstance()->setFileName( $key )->info( '执行定时任务['.$data['name'].'],返回结果成功.' );
+                        }
+                    } catch ( \Exception $e ) {
+                        Logger::getInstance()->setFileName( $key )->error( '执行定时任务['.$data['name'].'],异常:'.$e->getMessage() );
+                    }
+                };
+
+                Coroutine::create( $runnable );
+            };
+
             //加入定时任务
-            Timer::after( $diff > 0 ? $diff * 1000 : 1,function () use ($jobExecute,$key) {
-                try {
-                    /* @var $data array */
-                    $data = JobTable::getInstance()->get( $key );
-                    if (empty( $data ) || empty( $data['status'] )) {
-                        return;
-                    }
-                    if ($jobExecute->run( $data ) === false) {
-                        Logger::getInstance()->setFileName( $key )->error( '执行定时任务['.$data['name'].'],返回结果失败.' );
-                    } else {
-                        Logger::getInstance()->setFileName( $key )->info( '执行定时任务['.$data['name'].'],返回结果成功.' );
-                    }
-                } catch ( \Exception $e ) {
-                    Logger::getInstance()->setFileName( $key )->error( '执行定时任务['.$data['name'].'],异常:'.$e->getMessage() );
-                }
-            } );
+            Timer::after( $diff > 0 ? $diff * 1000 : 1,$callback );
         }
     }
 }
