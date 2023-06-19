@@ -26,7 +26,7 @@ class JobTable
         $this->_table = new Table( $size );
         $this->_table->column( 'name',Table::TYPE_STRING,20 );  //名称
         $this->_table->column( 'start_time',Table::TYPE_INT,8 );  //开始执行时间
-        $this->_table->column( 'stop_time',Table::TYPE_INT,8 );  //停止执行时间
+        $this->_table->column( 'end_time',Table::TYPE_INT,8 );  //停止执行时间
         $this->_table->column( 'format',Table::TYPE_STRING,30 ); //crontab格式 加秒
         $this->_table->column( 'run_type',Table::TYPE_STRING,10 );  //运行类型
         $this->_table->column( 'command',Table::TYPE_STRING,$size );  //执行任务
@@ -70,6 +70,7 @@ class JobTable
      */
     public function set($key,array $data = [],bool $saveFile = true)
     {
+        $data['command'] = is_array( $data['command'] ) ? json_encode( $data['command'] ) : trim( $data['command'] );
         if ($this->_table->set( $key,$data )) {
             return !$saveFile || $this->saveToFile();
         }
@@ -152,13 +153,13 @@ class JobTable
             }
         }
 
-        if (!empty( $data['stop_time'] )) {
-            if (strtotime( date( 'Y-m-d H:i:s',$data['stop_time'] ) ) !== $data['stop_time']) {
+        if (!empty( $data['end_time'] )) {
+            if (strtotime( date( 'Y-m-d H:i:s',$data['end_time'] ) ) !== $data['end_time']) {
                 return '结束时间必须是时间戳或不设置.';
             }
         }
 
-        $command = trim( $data['command'] );
+        $command = is_array( $data['command'] ) ? json_encode( $data['command'] ) : trim( $data['command'] );
 
         if (empty( $command )) {
             return '任务命令不能为空.';

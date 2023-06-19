@@ -33,6 +33,11 @@ class ClassJobExecute extends JobExecute
      */
     public static function validate(string $command): bool
     {
-        return true;
+        $callback = json_decode( $command,true );
+        [$class,$method] = $callback;
+        if ($class && $method && class_exists( $class ) && method_exists( $class,$method )) {
+            return true;
+        }
+        return false;
     }
 }

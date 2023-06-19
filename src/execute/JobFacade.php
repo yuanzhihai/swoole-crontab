@@ -29,7 +29,7 @@ class JobFacade
         }
 
         //判断执行结束时间
-        if ($data['stop_time'] && $data['stop_time'] < time()) {
+        if ($data['end_time'] && $data['end_time'] < time()) {
             $data['status'] = 0;
             JobTable::getInstance()->set( $key,$data );
             return;

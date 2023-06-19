@@ -26,7 +26,7 @@ php Crontab stop #关闭常驻内存服务
       {
           "name": "url",    // 任务名称
           "start_time": 0,  // 开始时间默认0解析format格式直接运行
-          "stop_time": 0,   // 结束时间默认0一直运行
+          "end_time": 0,   // 结束时间默认0一直运行
           "format": "* * * * * *",  // 执行时间格式参见Crontab基本格式再加上一个秒
           "run_type": "Curl",  // 运行方式内置Class, Curl , Bash三种方式
           "command": "http://192.168.1.102"  // class 任务 "command": {"\app\task\Test","execute","params"}" 
@@ -51,7 +51,7 @@ php Crontab stop #关闭常驻内存服务
                       "604582ba74e34": {
                           "name": "Curl",
                           "start_time": 0,
-                          "stop_time": 0,
+                          "end_time": 0,
                           "format": "* * * * * *",
                           "run_type": "Curl",
                           "command": "http://192.168.1.102",
